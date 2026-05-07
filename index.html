@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulators</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; margin: 0; }
+        .calc-body { background: #333; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        
+        #display { 
+            width: 100%; height: 60px; font-size: 24px; text-align: right; 
+            margin-bottom: 15px; border: none; border-radius: 8px; 
+            padding: 10px; box-sizing: border-box; background: #eee; color: #222;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        
+        button { 
+            width: 65px; height: 55px; font-size: 20px; cursor: pointer; 
+            border-radius: 8px; border: none; background: #f9f9f9; transition: 0.2s;
+        }
+        button:hover { background: #e0e0e0; transform: scale(1.05); }
+
+        .op { background: #ff9500; color: white; }
+        .special { background: #555; color: white; }
+        .clear { background: #ff3b30; color: white; }
+        .equal { background: #34c759; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="calc-body">
+    <input type="text" id="display" value="0" disabled>
+    
+    <div class="grid">
+        <button onclick="clickBtn('7')">7</button>
+        <button onclick="clickBtn('8')">8</button>
+        <button onclick="clickBtn('9')">9</button>
+        <button class="op" onclick="clickBtn('/')">/</button>
+
+        <button onclick="clickBtn('4')">4</button>
+        <button onclick="clickBtn('5')">5</button>
+        <button onclick="clickBtn('6')">6</button>
+        <button class="op" onclick="clickBtn('*')">*</button>
+
+        <button onclick="clickBtn('1')">1</button>
+        <button onclick="clickBtn('2')">2</button>
+        <button onclick="clickBtn('3')">3</button>
+        <button class="op" onclick="clickBtn('-')">-</button>
+
+        <button onclick="clickBtn('0')">0</button>
+        <button onclick="clickBtn('.')">.</button>
+        <button class="equal" onclick="equal()">=</button>
+        <button class="op" onclick="clickBtn('+')">+</button>
+
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button class="special" onclick="calculateSpecial('sq')">x²</button>
+        <button class="special" onclick="calculateSpecial('sqrt')">√</button>
+        <button class="special" onclick="calculatePercent()">%</button>
+    </div>
+</div>
+
+<script>
+    let display = document.getElementById('display');
+
+    function clickBtn(val) {
+        let current = display.value;
+
+        if (current === "0" && val !== ".") {
+            display.value = val;
+            return;
+        }
+
+        if (val === ".") {
+            let chunks = current.split(/[\+\-\*\/]/);
+            if (chunks[chunks.length - 1].includes(".")) return;
+        }
+
+        display.value += val;
+    }
+
+    function clearDisplay() {
+        display.value = "0";
+    }
+
+    function calculateSpecial(op) {
+        try {
+            let val = parseFloat(display.value);
+            if (op === 'sq') display.value = val * val;
+            if (op === 'sqrt') display.value = Math.sqrt(val);
+        } catch (e) {
+            display.value = "Error";
+        }
+    }
+
+    function calculatePercent() {
+        let current = display.value;
+        try {
+            let match = current.match(/^(.*)([\+\-\*\/])(\d+\.?\d*)$/);
+            
+            if (match) {
+                let baseVal = eval(match[1]); // Aprēķina pirmo daļu
+                let operator = match[2];
+                let percentVal = parseFloat(match[3]);
+                let calculated = (percentVal / 100) * baseVal;
+                display.value = baseVal + operator + calculated;
+            } else {
+                display.value = parseFloat(current) / 100;
+            }
+        } catch (e) {
+            display.value = "Error";
+        }
+    }
+
+    function equal() {
+        try {
+            display.value = eval(display.value);
+        } catch (e) {
+            display.value = "Error";
+        }
+    }
+</script>
+
+</body>
+</html>
