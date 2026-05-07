@@ -99,7 +99,7 @@
             let match = current.match(/^(.*)([\+\-\*\/])(\d+\.?\d*)$/);
             
             if (match) {
-                let baseVal = eval(match[1]); // Aprēķina pirmo daļu
+                let baseVal = eval(match[1]);
                 let operator = match[2];
                 let percentVal = parseFloat(match[3]);
                 let calculated = (percentVal / 100) * baseVal;
